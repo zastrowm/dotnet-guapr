@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package >
+  <!--
+  Any nuget reference you add will be included in the nuget package as a dependency without you
+  having to add it in here.
+  
+  For more info on how to compose a nuspec file see http://docs.nuget.org/create/nuspec-reference 
+  -->
+
+  <metadata>
+    <id>WpfHosting.Client</id>
+    <version>1.0.0-alpha-001</version>
+    <title>WPF AutoRefresh Hosting Dlls</title>
+    <description>Client dlls for creating a control which is hosted from the WPF Watcher application.</description>
+    <authors>Mackenzie Zastrow</authors>
+    <owners>Mackenzie Zastrow</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>2016 Mackenzie Zastrow</copyright>
+    <tags>WPF, Hosting, Refresh</tags>
+    <releaseNotes>Initial release.</releaseNotes>
+  </metadata>
+</package>
