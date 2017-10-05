@@ -27,32 +27,40 @@ namespace WpfWatcher
       _host = new AppDomainedControlHost(_configuration);
       _host.StatusChanged += HandleHostChanged;
 
-      Loaded += delegate
-                {
-                  _host.Reload();
-                };
+      _host.Reload();
     }
 
-    public Window Window
-      => Window.GetWindow(this);
+    public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
+      "Status",
+      typeof(string),
+      typeof(ControlWatcher),
+      new PropertyMetadata(default(string)));
+
+    public string Status
+    {
+      get { return (string)GetValue(StatusProperty); }
+      set { SetValue(StatusProperty, value); }
+    }
 
     private void HandleHostChanged(object sender, ControlHostStatus e)
     {
+      var assemblyName = Path.GetFileName(_configuration.PathToAssembly);
+
       switch (_host.Status)
       {
         case ControlHostStatus.Valid:
           Content = _host.Host;
-          Window.Title = $"WPF Watcher - Running {Path.GetFileName(_configuration.PathToAssembly)}";
+          Status = $"Running «{assemblyName}»";
           break;
         case ControlHostStatus.Loading:
           Content = _waitingControl;
           _waitingControl.Message = "Loading assemblies...";
-          Window.Title = $"WPF Watcher - Loading {Path.GetFileName(_configuration.PathToAssembly)}";
+          Status = $"Loading «{assemblyName}»";
           break;
         case ControlHostStatus.Waiting:
           Content = _waitingControl;
           _waitingControl.Message = "Waiting for valid assemblies...";
-          Window.Title = $"WPF Watcher - Waiting for {Path.GetFileName(_configuration.PathToAssembly)}";
+          Status = $"Waiting for valid assemblies from «{assemblyName}»";
           break;
         default:
           throw new ArgumentOutOfRangeException();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,21 +118,35 @@ namespace WpfWatcher
       if (!File.Exists(pathToAssembly))
         return;
 
-      LoadAssemblyInput.Visibility = Visibility.Collapsed;
-      HostedControl.Visibility = Visibility.Visible;
+      Reset();
 
-      AssemblyConfiguration configuration;
-      if (!_configurations.TryGetValue(pathToAssembly, out configuration))
+      try
       {
-        configuration = new AssemblyConfiguration()
-                        {
-                          PathToAssembly = pathToAssembly
-                        };
-        _configurations[configuration.PathToAssembly] = configuration;
+        // TODO update this so that it doesn't keep ALL configurations
+        AssemblyConfiguration configuration;
+        if (!_configurations.TryGetValue(pathToAssembly, out configuration))
+        {
+          configuration = new AssemblyConfiguration()
+                          {
+                            PathToAssembly = pathToAssembly
+                          };
+          _configurations[configuration.PathToAssembly] = configuration;
+        }
+
+        Environment.CurrentDirectory = Path.GetDirectoryName(pathToAssembly);
+        _watcher = new ControlWatcher(configuration);
+      }
+      catch (Exception exception)
+      {
+        MessageBox.Show($"Error Loading Assembly:\r\n    {pathToAssembly}\r\n > {exception.Message}\r\n\r\nLoading has been canceled",
+                        "Error Loading Assembly",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+        return;
       }
 
-      Environment.CurrentDirectory = Path.GetDirectoryName(pathToAssembly);
-      _watcher = new ControlWatcher(configuration);
+      LoadAssemblyInput.Visibility = Visibility.Collapsed;
+      HostedControl.Visibility = Visibility.Visible;
 
       Host.Content = _watcher;
 
@@ -143,13 +158,14 @@ namespace WpfWatcher
       LoadAssemblyInput.Visibility = Visibility.Visible;
       HostedControl.Visibility = Visibility.Collapsed;
 
-      var watcher = Host.Content as ControlWatcher;
-      if (watcher != null)
-      {
-        watcher.Dispose();
-      }
+      (Host.Content as ControlWatcher)?.Dispose();
 
       Host.Content = null;
+    }
+
+    private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
+    {
+      Process.Start("https://bitbucket.org/zastrowm/.net-guapr/overview");
     }
   }
 }

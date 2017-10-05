@@ -2,29 +2,71 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:WpfWatcher"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="WPF Watcher" Height="350" Width="525">
+        Width="525"
+        Height="350"
+        Icon="Icon.ico"
+        mc:Ignorable="d">
+  <Window.Title>
+    <MultiBinding StringFormat="{}GUAPR - GUI App Watch - {0}">
+      <Binding ElementName="Host"
+               FallbackValue="Waiting for valid Assembly"
+               Path="Content.(local:ControlWatcher.Status)" />
+    </MultiBinding>
+  </Window.Title>
   <Grid>
-    <Grid MinWidth="300" VerticalAlignment="Center" Name="LoadAssemblyInput">
-      <StackPanel Margin="10" MaxWidth="500">
-        <TextBlock TextWrapping="Wrap" Padding="5 20" FontSize="14">No Assembly is currently loaded to observe.  Drag &amp; Drop an assembly onto the dialog, or browse to an
-      assembly and load it.</TextBlock>
-        <Grid >
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-          <Label Content="Assembly: "/>
-          <TextBox Margin="0 1" VerticalAlignment="Center" Grid.Column="1" Name="PathToAssembly"/>
-          <Button Margin="3" Padding="6 0" Grid.Column="2" Content="..." Click="BrowseButtonClicked" />
-        </Grid>
-        <Button Margin="3" Padding="6 3" Content="Watch Assembly" HorizontalAlignment="Right" Click="WatchClicked"/>
-      </StackPanel>
+    <Grid>
+      <DockPanel Name="LoadAssemblyInput"
+                 MinWidth="300">
+
+        <TextBlock Margin="10"
+                   DockPanel.Dock="Bottom"
+                   TextWrapping="Wrap">
+          Visit the
+          <Hyperlink Click="Hyperlink_OnClick">GUAPR home</Hyperlink>
+          for more information
+        </TextBlock>
+
+        <StackPanel MaxWidth="500"
+                    VerticalAlignment="Center"
+                    Margin="10">
+          <TextBlock Padding="5,20"
+                     FontSize="14"
+                     TextWrapping="Wrap">
+            No Assembly is currently loaded to observe.  Drag &amp; Drop an assembly onto the dialog, or browse to an
+            assembly and load it.
+          </TextBlock>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Content="Assembly: " />
+            <TextBox Name="PathToAssembly"
+                     Grid.Column="1"
+                     Margin="0,1"
+                     VerticalAlignment="Center" />
+            <Button Grid.Column="2"
+                    Margin="3"
+                    Padding="6,0"
+                    Click="BrowseButtonClicked"
+                    Content="..." />
+          </Grid>
+          <Button Margin="3"
+                  Padding="6,3"
+                  HorizontalAlignment="Right"
+                  Click="WatchClicked"
+                  Content="Watch Assembly" />
+
+        </StackPanel>
+
+      </DockPanel>
     </Grid>
-    
-    <Grid Name="HostedControl" Visibility="Collapsed">
+
+    <Grid Name="HostedControl"
+          Visibility="Collapsed">
       <ContentPresenter Name="Host" />
     </Grid>
   </Grid>
