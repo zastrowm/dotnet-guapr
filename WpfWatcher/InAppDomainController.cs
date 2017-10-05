@@ -7,7 +7,7 @@ using WpfHosting;
 namespace WpfWatcher
 {
   /// <summary>
-  ///  Api that is created in the other domain and allows the caller app-domain to interact with
+  ///  Api that is created in the "Reload" domain and allows the "Host" app-domain to interact with
   ///  objects in the AppDomain.
   /// </summary>
   public class InAppDomainController : MarshalByRefObject

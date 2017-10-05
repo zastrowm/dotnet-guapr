@@ -25,7 +25,7 @@ namespace WpfWatcher
     }
 
     /// <summary>
-    ///  Initializes the given entry point by calling <see crefHostedEntryPointnt.Initialize"/>
+    ///  Initializes the given entry point by calling <see cref="HostedEntryPoint.Initialize"/>
     ///  returning the given framework as an INativeHandleContract.
     /// </summary>
     public INativeHandleContract Initialize(Dictionary<string, string> configuration,
