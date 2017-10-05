@@ -29,6 +29,12 @@ namespace WpfWatcher
       AllowDrop = true;
       DragEnter += OnDragEnter;
       Drop += OnDrop;
+
+      Loaded += delegate
+                {
+                  var systemMenu = new SystemMenuExtender(this);
+                  systemMenu.Add("&Reset Application", (_1, _2) => Reset());
+                };
     }
 
     private void OnDragEnter(object sender, DragEventArgs e)
