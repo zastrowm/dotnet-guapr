@@ -52,8 +52,8 @@
   <ItemGroup>
     <Compile Include="HostedEntryPoint.cs" />
     <Compile Include="HostedTargetTypeAttribute.cs" />
-    <Compile Include="IEntryPointShutdownInfo.cs" />
-    <Compile Include="IEntryPointStartupInfo.cs" />
+    <Compile Include="IEntryPointShutdownApi.cs" />
+    <Compile Include="IEntryPointStartupApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IHostedEntryPoint.cs" />
   </ItemGroup>

@@ -15,7 +15,7 @@ namespace Guapr.ClientHosting.Test
   {
     // invoked when the app is starting.  The control that provides the entry point to the GUI
     // should be created and returned in here. 
-    protected override OurCustomControl Startup(IEntryPointStartupInfo startupInfo, State previousState)
+    protected override OurCustomControl Startup(IEntryPointStartupApi startupApi, State previousState)
     {
       // if we never started before, this can be null
       previousState = previousState ?? new State();
@@ -36,7 +36,7 @@ namespace Guapr.ClientHosting.Test
                 };
 
       // when the host has granted us focus, let's refocus the last text box we were at
-      startupInfo.FocusGranted +=
+      startupApi.FocusGranted +=
         (sender, args) =>
         {
           var toFocus = previousState.IsLastNameFocused
@@ -52,7 +52,7 @@ namespace Guapr.ClientHosting.Test
 
     // Invoked when the current session of the GUI is shutting down.  Should be used to save whatever state we
     // want to maintain so that the reload is as seamless as possible
-    protected override State Shutdown(OurCustomControl gui, IEntryPointShutdownInfo shutdownInfo)
+    protected override State Shutdown(OurCustomControl gui, IEntryPointShutdownApi shutdownApi)
     {
       var focusedTextBox = gui.LastName.IsFocused ? gui.LastName : gui.FirstName;
 

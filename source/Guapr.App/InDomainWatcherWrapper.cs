@@ -4,6 +4,7 @@ using System.AddIn.Pipeline;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using Guapr.ClientHosting;
 using Newtonsoft.Json;
@@ -18,7 +19,7 @@ namespace Guapr.App
   {
     private readonly IHostedEntryPoint _entryPoint;
     private FrameworkElement _element;
-    private StartupAndShutdownInfo _startupInfo;
+    private StartupAndShutdownApi _startupApi;
 
     /// <summary> Constructor. </summary>
     /// <param name="entryPoint"> The entry point to wrap. </param>
@@ -33,26 +34,26 @@ namespace Guapr.App
     /// </summary>
     public INativeHandleContract Initialize(string directoryPath)
     {
-      _startupInfo = new StartupAndShutdownInfo(new DirectoryInfo(directoryPath));
-      _element = _entryPoint.Startup(_startupInfo);
+      _startupApi = new StartupAndShutdownApi(new DirectoryInfo(directoryPath));
+      _element = _entryPoint.Startup(_startupApi);
       return FrameworkElementAdapters.ViewToContractAdapter(_element);
     }
 
     /// <summary> Invoked when the host has focused the proxy element. </summary>
     public void NotifyFocused()
-      => _startupInfo.FireFocusGranted(_element, EventArgs.Empty);
+      => _startupApi.FireFocusGranted(_element, EventArgs.Empty);
 
     /// <summary> Allows the entry point time to save any data that it wants to store. </summary>
     public void Shutdown()
     {
-      _entryPoint.Shutdown(_element, _startupInfo);
+      _entryPoint.Shutdown(_element, _startupApi);
     }
 
     /// <summary> Implementation of the startup/shutdown infos </summary>
-    private class StartupAndShutdownInfo : IEntryPointStartupInfo,
-                                           IEntryPointShutdownInfo
+    private class StartupAndShutdownApi : IEntryPointStartupApi,
+                                           IEntryPointShutdownApi
     {
-      public StartupAndShutdownInfo(DirectoryInfo stateDirectory)
+      public StartupAndShutdownApi(DirectoryInfo stateDirectory)
       {
         StateDirectory = stateDirectory;
       }
@@ -68,11 +69,13 @@ namespace Guapr.App
         => FocusGranted?.Invoke(sender, args);
 
       /// <inheritdoc />
-      bool IEntryPointStartupInfo.TryLoadState<T>(out T state)
+      bool IEntryPointStartupApi.TryLoadState<T>(string name, out T state)
       {
+        name = GetSafeName(name);
+
         try
         {
-          var file = GetSessionFile();
+          var file = GetSessionFile(name);
           if (!file.Exists)
           {
             state = default(T);
@@ -95,11 +98,13 @@ namespace Guapr.App
       }
 
       /// <inheritdoc />
-      void IEntryPointShutdownInfo.SaveState<T>(T state)
+      void IEntryPointShutdownApi.SaveState<T>(string name, T state)
       {
+        name = GetSafeName(name);
+
         try
         {
-          var file = GetSessionFile();
+          var file = GetSessionFile(name);
           var serializer = new JsonSerializer();
 
           using (var writer = new StreamWriter(file.Open(FileMode.Create)))
@@ -112,8 +117,16 @@ namespace Guapr.App
         }
       }
 
-      private FileInfo GetSessionFile()
-        => new FileInfo(Path.Combine(StateDirectory.FullName, ".session.state."));
+      private string GetSafeName(string name)
+      {
+        if (name == null)
+          return "";
+
+        return "." + Convert.ToBase64String(Encoding.UTF8.GetBytes(name));
+      }
+
+      private FileInfo GetSessionFile(string name)
+        => new FileInfo(Path.Combine(StateDirectory.FullName, $".__session.state{name}__"));
     }
   }
 }
