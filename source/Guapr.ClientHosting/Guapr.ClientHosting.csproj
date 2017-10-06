@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-   <!-- Common Properties -->
+    <!-- Common Properties -->
     <OutputPath>$(SolutionDir)\.bin\$(Configuration)\$(AssemblyName)</OutputPath>
     <DocumentationFile>$(SolutionDir)\.bin\$(Configuration)\$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
     <IntermediateOutputPath>$(SolutionDir)\bin\.obj\$(Configuration)\$(AssemblyName)</IntermediateOutputPath>
@@ -57,18 +57,13 @@
     <Compile Include="IHostedEntryPoint.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Guapr.ClientHost.nuspec" />
+    <None Include="Guapr.ClientHosting.nuspec" />
     <None Include="package.builder.json" />
     <None Include="packages.config" />
-    <None Include="Guapr.ClientHost.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NuGet.Package.Builder.1.0.10\build\NuGet.Package.Builder.targets" Condition="Exists('..\packages\NuGet.Package.Builder.1.0.10\build\NuGet.Package.Builder.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NuGet.Package.Builder.1.0.10\build\NuGet.Package.Builder.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGet.Package.Builder.1.0.10\build\NuGet.Package.Builder.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
