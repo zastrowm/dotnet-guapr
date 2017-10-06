@@ -10,19 +10,18 @@ using Guapr.ClientHosting.Test;
 
 namespace Guapr.ClientHosting.Test
 {
-  /// <summary> Entry point that simply exposes two text boxes with a First and Last Name. </summary>
+  // Entry point that simply exposes two text boxes with a First and Last Name. 
   internal class ExampleHostEntryPoint : HostedEntryPoint<OurCustomControl, State>
   {
-    // invoked when the app is starting.  The control that provides the entry point to the GUI
-    // should be created and returned in here. 
+    // invoked when the app is starting.  We need to return the gui control here 
     protected override OurCustomControl Startup(IEntryPointStartupApi startupApi, State previousState)
     {
-      // if we never started before, this can be null
+      // if we never started before, previousState could be null
       previousState = previousState ?? new State();
       previousState.ReloadIndex++;
 
-      // create the gui, restoring the state via the State class (which is the only thing that's
-      // saved between reloads) 
+      // create the gui, restoring the state via the State class (which is the only thing
+      // that's saved between reloads) 
       var gui = new OurCustomControl(previousState.ReloadIndex)
                 {
                   FirstName =
@@ -47,11 +46,12 @@ namespace Guapr.ClientHosting.Test
           toFocus.SelectionStart = previousState.SelectionIndex;
         };
 
+      // of course, return the gui that we want displayed
       return gui;
     }
 
-    // Invoked when the current session of the GUI is shutting down.  Should be used to save whatever state we
-    // want to maintain so that the reload is as seamless as possible
+    // Invoked when the current session of the GUI is shutting down.  Should be used to 
+    // save whatever state we want to maintain so that the reload is as seamless as possible
     protected override State Shutdown(OurCustomControl gui, IEntryPointShutdownApi shutdownApi)
     {
       var focusedTextBox = gui.LastName.IsFocused ? gui.LastName : gui.FirstName;
