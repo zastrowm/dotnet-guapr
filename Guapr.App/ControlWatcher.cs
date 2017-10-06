@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary>
   ///  Takes an WPF-control assembly and loads it, automatically refreshing the control/app-domain

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary> Allows adding a entry to the app system menu for a wpf app. </summary>
   public class SystemMenuExtender

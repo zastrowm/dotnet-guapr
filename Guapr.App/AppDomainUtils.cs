@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary> Utility helper methods for interacting with AppDomains. </summary>
   public static class AppDomainUtils

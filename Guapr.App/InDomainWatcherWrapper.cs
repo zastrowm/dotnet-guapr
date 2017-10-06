@@ -4,28 +4,28 @@ using System.AddIn.Pipeline;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using WpfHosting;
+using Guapr.ClientHosting;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary>
-  ///  A proxy for <see cref="HostedEntryPoint"/> that exists in the AppDomain where the proxy was
+  ///  A proxy for <see cref="IHostedEntryPoint"/> that exists in the AppDomain where the proxy was
   ///  created.  Provides additional functionality for interacting with the given instance.
   /// </summary>
   public class InDomainWatcherWrapper : MarshalByRefObject
   {
-    private readonly HostedEntryPoint _entryPoint;
+    private readonly IHostedEntryPoint _entryPoint;
     private FrameworkElement _element;
 
     /// <summary> Constructor. </summary>
     /// <param name="entryPoint"> The entry point to wrap. </param>
-    public InDomainWatcherWrapper(HostedEntryPoint entryPoint)
+    public InDomainWatcherWrapper(IHostedEntryPoint entryPoint)
     {
       _entryPoint = entryPoint;
     }
 
     /// <summary>
-    ///  Initializes the given entry point by calling <see cref="HostedEntryPoint.Initialize"/>
+    ///  Initializes the given entry point by calling <see cref="IHostedEntryPoint.Initialize"/>
     ///  returning the given framework as an INativeHandleContract.
     /// </summary>
     public INativeHandleContract Initialize(Dictionary<string, string> configuration,

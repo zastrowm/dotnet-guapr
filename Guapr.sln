@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfWatcher", "WpfWatcher\WpfWatcher.csproj", "{F9C8D242-469A-4488-9007-21071D09C1CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guapr.App", "Guapr.App\Guapr.App.csproj", "{F9C8D242-469A-4488-9007-21071D09C1CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHosting", "WpfWatch\WpfHosting.csproj", "{FBA5D776-C1E5-4B06-8E81-FCEFE9041875}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guapr.ClientHosting", "Guapr.ClientHosting\Guapr.ClientHosting.csproj", "{FBA5D776-C1E5-4B06-8E81-FCEFE9041875}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {07348278-5DC8-481C-A719-7B6FDC0A2BCB}
 	EndGlobalSection
 EndGlobal

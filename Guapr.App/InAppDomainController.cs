@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using WpfHosting;
+using Guapr.ClientHosting;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary>
   ///  Api that is created in the "Reload" domain and allows the "Host" app-domain to interact with
@@ -25,7 +25,7 @@ namespace WpfWatcher
         throw new InvalidOperationException(
           $"No valid {nameof(HostedTargetTypeAttribute)} found for assembly «{assembly}».");
 
-      var instance = (HostedEntryPoint)Activator.CreateInstance(watcherType);
+      var instance = (IHostedEntryPoint)Activator.CreateInstance(watcherType);
 
       return new InDomainWatcherWrapper(instance);
     }

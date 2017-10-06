@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary>
   ///  Retrieves the name of the assembly from the provided exe or dll, by loading it into an app

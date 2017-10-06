@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary>
   /// Interaction logic for WaitingForChangesControl.xaml

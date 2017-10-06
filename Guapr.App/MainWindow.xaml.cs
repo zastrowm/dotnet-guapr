@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Guapr.App.Properties;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using WpfWatcher.Properties;
 
-namespace WpfWatcher
+namespace Guapr.App
 {
   /// <summary>
   /// Interaction logic for MainWindow.xaml
