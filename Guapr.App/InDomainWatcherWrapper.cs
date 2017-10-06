@@ -2,9 +2,11 @@
 using System.AddIn.Contract;
 using System.AddIn.Pipeline;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using Guapr.ClientHosting;
+using Newtonsoft.Json;
 
 namespace Guapr.App
 {
@@ -16,6 +18,7 @@ namespace Guapr.App
   {
     private readonly IHostedEntryPoint _entryPoint;
     private FrameworkElement _element;
+    private StartupAndShutdownInfo _startupInfo;
 
     /// <summary> Constructor. </summary>
     /// <param name="entryPoint"> The entry point to wrap. </param>
@@ -28,19 +31,77 @@ namespace Guapr.App
     ///  Initializes the given entry point by calling <see cref="IHostedEntryPoint.Initialize"/>
     ///  returning the given framework as an INativeHandleContract.
     /// </summary>
-    public INativeHandleContract Initialize(Dictionary<string, string> configuration,
-                                            out Dictionary<string, string> returnedConfiguration)
+    public INativeHandleContract Initialize(string directoryPath)
     {
-      _element = _entryPoint.Initialize(configuration);
-      returnedConfiguration = configuration;
+      _startupInfo = new StartupAndShutdownInfo(new DirectoryInfo(directoryPath));
+      _element = _entryPoint.Startup(_startupInfo);
       return FrameworkElementAdapters.ViewToContractAdapter(_element);
     }
 
     /// <summary> Allows the entry point time to save any data that it wants to store. </summary>
-    public Dictionary<string, string> Shutdown(Dictionary<string, string> configuration)
+    public void Shutdown()
     {
-      _entryPoint.Shutdown(_element, configuration);
-      return configuration;
+      _entryPoint.Shutdown(_element, _startupInfo);
+    }
+
+    /// <summary> Implementation of the startup/shutdown infos </summary>
+    private class StartupAndShutdownInfo : IEntryPointStartupInfo,
+                                           IEntryPointShutdownInfo
+    {
+      public StartupAndShutdownInfo(DirectoryInfo stateDirectory)
+      {
+        StateDirectory = stateDirectory;
+      }
+
+      public DirectoryInfo StateDirectory { get; }
+
+      /// <inheritdoc />
+      bool IEntryPointStartupInfo.TryLoadState<T>(out T state)
+      {
+        try
+        {
+          var file = GetSessionFile();
+          if (!file.Exists)
+          {
+            state = default(T);
+            return false;
+          }
+
+          using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
+          using (var jsonReader = new JsonTextReader(reader))
+          {
+            var serializer = new JsonSerializer();
+            state = serializer.Deserialize<T>(jsonReader);
+            return true;
+          }
+        }
+        catch
+        {
+          state = default(T);
+          return false;
+        }
+      }
+
+      /// <inheritdoc />
+      void IEntryPointShutdownInfo.SaveState<T>(T state)
+      {
+        try
+        {
+          var file = GetSessionFile();
+          var serializer = new JsonSerializer();
+
+          using (var writer = new StreamWriter(file.Open(FileMode.Create)))
+          {
+            serializer.Serialize(writer, state);
+          }
+        }
+        catch
+        {
+        }
+      }
+
+      private FileInfo GetSessionFile() 
+        => new FileInfo(Path.Combine(StateDirectory.FullName, ".session.state."));
     }
   }
 }

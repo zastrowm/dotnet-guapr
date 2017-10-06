@@ -3,6 +3,8 @@ using System.AddIn.Pipeline;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -123,11 +125,9 @@ namespace Guapr.App
                                                          .FindEntryPoint(_assemblyToObserve);
                        });
 
-        // dictionaries are serialized (read: copied) instead of passed by reference across app-domains
-        Dictionary<string, string> tempConfiguration;
-        var reference = _currentEntryPoint.Initialize(_configuration.Data, out tempConfiguration);
-        _configuration.Data = tempConfiguration;
+        var directoryInfo = GetSesionDirectory();
 
+        var reference = _currentEntryPoint.Initialize(directoryInfo.FullName);
         var proxyElement = FrameworkElementAdapters.ContractToViewAdapter(reference);
 
         Host = proxyElement;
@@ -149,6 +149,17 @@ namespace Guapr.App
       }
     }
 
+    private DirectoryInfo GetSesionDirectory()
+    {
+      var md5 = Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(_assemblyToObserve)));
+      var assemblyPath = new Uri(typeof(AppDomainedControlHost).Assembly.EscapedCodeBase).LocalPath;
+      var directoryPath = Path.Combine(Path.GetDirectoryName(assemblyPath),"Sessions",md5);
+
+      var directoryInfo = new DirectoryInfo(directoryPath);
+      directoryInfo.Create();
+      return directoryInfo;
+    }
+
     /// <summary> Shuts down the current entry point. </summary>
     private void UnloadDomain(bool ignoreShutdown = false)
     {
@@ -159,7 +170,7 @@ namespace Guapr.App
       {
         try
         {
-          _configuration.Data = _currentEntryPoint.Shutdown(_configuration.Data);
+          _currentEntryPoint.Shutdown();
           _currentEntryPoint = null;
         }
         catch (Exception)

@@ -8,13 +8,5 @@ namespace Guapr.App
   public class AssemblyConfiguration
   {
     public string PathToAssembly { get; set; }
-
-    public Dictionary<string, string> Data { get; set; }
-
-    /// <summary> Default constructor. </summary>
-    public AssemblyConfiguration()
-    {
-      Data = new Dictionary<string, string>();
-    }
   }
 }
