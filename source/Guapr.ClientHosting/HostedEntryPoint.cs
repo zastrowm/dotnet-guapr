@@ -35,9 +35,9 @@ namespace Guapr.ClientHosting
     }
 
     /// <summary> St. </summary>
-    /// <param name="originalInstance"> The original instance. </param>
+    /// <param name="gui"> The original instance. </param>
     /// <param name="shutdownInfo"> Information describing the shutdown. </param>
     /// <returns> A TState. </returns>
-    protected abstract TState Shutdown(TFrameworkElement originalInstance, IEntryPointShutdownInfo shutdownInfo);
+    protected abstract TState Shutdown(TFrameworkElement gui, IEntryPointShutdownInfo shutdownInfo);
   }
 }

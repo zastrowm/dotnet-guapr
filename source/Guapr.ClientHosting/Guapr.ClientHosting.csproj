@@ -9,14 +9,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Guapr.ClientHosting</RootNamespace>
     <AssemblyName>Guapr.ClientHosting</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <!-- Common Properties -->
     <OutputPath>$(SolutionDir)\.bin\$(Configuration)\$(AssemblyName)</OutputPath>
     <DocumentationFile>$(SolutionDir)\.bin\$(Configuration)\$(AssemblyName)\$(AssemblyName).xml</DocumentationFile>
-    <IntermediateOutputPath>$(SolutionDir)\bin\.obj\$(Configuration)\$(AssemblyName)</IntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)\.bin\.obj\$(Configuration)\$(AssemblyName)</IntermediateOutputPath>
+    <TargetFrameworkProfile />
     <!-- /Common -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -57,7 +58,6 @@
     <Compile Include="IHostedEntryPoint.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Guapr.ClientHost.nuspec" />
     <None Include="Guapr.ClientHosting.nuspec" />
     <None Include="package.builder.json" />
     <None Include="packages.config" />

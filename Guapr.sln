@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guapr.App", "source\Guapr.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guapr.ClientHosting", "source\Guapr.ClientHosting\Guapr.ClientHosting.csproj", "{FBA5D776-C1E5-4B06-8E81-FCEFE9041875}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{4B78BA92-CAE1-4E0E-99BF-1EFB135EBC29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guapr.ClientHosting.Test", "test\Guapr.ClientHosting.Test\Guapr.ClientHosting.Test.csproj", "{ACA96FC4-E41F-4E46-AF69-53DE00AD138E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,10 @@ Global
 		{FBA5D776-C1E5-4B06-8E81-FCEFE9041875}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBA5D776-C1E5-4B06-8E81-FCEFE9041875}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBA5D776-C1E5-4B06-8E81-FCEFE9041875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA96FC4-E41F-4E46-AF69-53DE00AD138E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA96FC4-E41F-4E46-AF69-53DE00AD138E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA96FC4-E41F-4E46-AF69-53DE00AD138E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA96FC4-E41F-4E46-AF69-53DE00AD138E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F9C8D242-469A-4488-9007-21071D09C1CE} = {F8E0FFB4-263C-4406-A95C-91340D49A090}
 		{FBA5D776-C1E5-4B06-8E81-FCEFE9041875} = {F8E0FFB4-263C-4406-A95C-91340D49A090}
+		{ACA96FC4-E41F-4E46-AF69-53DE00AD138E} = {4B78BA92-CAE1-4E0E-99BF-1EFB135EBC29}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07348278-5DC8-481C-A719-7B6FDC0A2BCB}

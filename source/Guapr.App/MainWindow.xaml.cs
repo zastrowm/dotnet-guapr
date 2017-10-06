@@ -34,7 +34,8 @@ namespace Guapr.App
       Loaded += delegate
                 {
                   var systemMenu = new SystemMenuExtender(this);
-                  systemMenu.Add("&Reset Application", (_1, _2) => Reset());
+                  systemMenu.Add("&Reload Client", (_1, _2) => Reload());
+                  systemMenu.Add("&Clear && Reset Application", (_1, _2) => Reset());
                 };
     }
 
@@ -161,6 +162,11 @@ namespace Guapr.App
       (Host.Content as ControlWatcher)?.Dispose();
 
       Host.Content = null;
+    }
+
+    internal void Reload()
+    {
+      (Host.Content as ControlWatcher)?.Reload();
     }
 
     private void Hyperlink_OnClick(object sender, RoutedEventArgs e)

@@ -28,7 +28,7 @@ namespace Guapr.App
     }
 
     /// <summary>
-    ///  Initializes the given entry point by calling <see cref="IHostedEntryPoint.Initialize"/>
+    ///  Initializes the given entry point by calling <see cref="IHostedEntryPoint.Startup"/>
     ///  returning the given framework as an INativeHandleContract.
     /// </summary>
     public INativeHandleContract Initialize(string directoryPath)
@@ -37,6 +37,10 @@ namespace Guapr.App
       _element = _entryPoint.Startup(_startupInfo);
       return FrameworkElementAdapters.ViewToContractAdapter(_element);
     }
+
+    /// <summary> Invoked when the host has focused the proxy element. </summary>
+    public void NotifyFocused()
+      => _startupInfo.FireFocusGranted(_element, EventArgs.Empty);
 
     /// <summary> Allows the entry point time to save any data that it wants to store. </summary>
     public void Shutdown()
@@ -53,7 +57,15 @@ namespace Guapr.App
         StateDirectory = stateDirectory;
       }
 
+      /// <inheritdoc />
       public DirectoryInfo StateDirectory { get; }
+
+      /// <inheritdoc />
+      public event EventHandler FocusGranted;
+
+      /// <summary> Invokes the <see cref="FocusGranted"/> event. </summary>
+      public void FireFocusGranted(object sender, EventArgs args)
+        => FocusGranted?.Invoke(sender, args);
 
       /// <inheritdoc />
       bool IEntryPointStartupInfo.TryLoadState<T>(out T state)
@@ -100,7 +112,7 @@ namespace Guapr.App
         }
       }
 
-      private FileInfo GetSessionFile() 
+      private FileInfo GetSessionFile()
         => new FileInfo(Path.Combine(StateDirectory.FullName, ".session.state."));
     }
   }

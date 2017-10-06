@@ -1,6 +1,7 @@
 ﻿using System;
 using System.AddIn.Pipeline;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -136,6 +137,10 @@ namespace Guapr.App
                                  Keyboard.Focus(proxyElement);
                                  TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
                                  Host.MoveFocus(request);
+
+                                 _currentEntryPoint.NotifyFocused();
+
+                                 Debug.WriteLine("Focused (outer)");
                                };
 
         Status = ControlHostStatus.Valid;

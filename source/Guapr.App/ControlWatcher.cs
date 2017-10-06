@@ -42,6 +42,9 @@ namespace Guapr.App
       set { SetValue(StatusProperty, value); }
     }
 
+    public void Reload()
+      => _host.Reload();
+
     private void HandleHostChanged(object sender, ControlHostStatus e)
     {
       var assemblyName = Path.GetFileName(_configuration.PathToAssembly);
