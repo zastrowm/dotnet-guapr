@@ -72,8 +72,6 @@
     <Compile Include="AssemblyConfiguration.cs" />
     <Compile Include="AssemblyNameHelper.cs" />
     <Compile Include="ControlWatcher.cs" />
-    <Compile Include="InAppDomainController.cs" />
-    <Compile Include="InDomainWatcherWrapper.cs" />
     <Compile Include="MessageControl.xaml.cs">
       <DependentUpon>MessageControl.xaml</DependentUpon>
     </Compile>

@@ -6,15 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Guapr.ClientHosting;
 using Newtonsoft.Json;
 
-namespace Guapr.App
+namespace Guapr.ClientHosting.Internal
 {
   /// <summary>
-  ///  A proxy for <see cref="IHostedEntryPoint"/> that exists in the AppDomain where the proxy was
-  ///  created.  Provides additional functionality for interacting with the given instance.
+  ///  A proxy for <see cref="IHostedEntryPoint"/> that exists in the AppDomain where the entry-
+  ///  point was created.  Provides additional functionality for interacting with the given instance.
   /// </summary>
+  [OwnedByDomain(DomainAttribute.Client, CreatedBy = DomainAttribute.Client)]
   public class InDomainWatcherWrapper : MarshalByRefObject
   {
     private readonly IHostedEntryPoint _entryPoint;
@@ -51,14 +51,15 @@ namespace Guapr.App
 
     /// <summary> Implementation of the startup/shutdown infos </summary>
     private class StartupAndShutdownApi : IEntryPointStartupApi,
-                                           IEntryPointShutdownApi
+                                          IEntryPointShutdownApi
     {
       public StartupAndShutdownApi(DirectoryInfo stateDirectory)
       {
         StateDirectory = stateDirectory;
       }
 
-      /// <inheritdoc />
+      /// <inheritdoc cref="IEntryPointShutdownApi.StateDirectory" />
+      /// <inheritdoc cref="IEntryPointShutdownApi.StateDirectory" />
       public DirectoryInfo StateDirectory { get; }
 
       /// <inheritdoc />

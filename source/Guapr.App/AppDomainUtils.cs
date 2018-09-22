@@ -15,7 +15,8 @@ namespace Guapr.App
     public static T CreateInstanceOf<T>(this AppDomain domain)
       where T : MarshalByRefObject
     {
-      return (T)domain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName);
+      var instance = domain.CreateInstance(typeof(T).Assembly.FullName, typeof(T).FullName);
+      return (T)instance.Unwrap();
     }
 
     /// <summary>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Guapr.ClientHosting.Internal;
 
 namespace Guapr.App
 {
@@ -26,7 +27,7 @@ namespace Guapr.App
   internal class AppDomainedControlHost : IDisposable
   {
     private readonly AssemblyConfiguration _configuration;
-    private readonly string _rootDictionary;
+    private readonly string _rootDirectory;
     private readonly string _assemblyToObserve;
 
     private AppDomain _lastDomain;
@@ -39,12 +40,12 @@ namespace Guapr.App
     {
       _configuration = configuration;
 
-      _rootDictionary = Path.GetDirectoryName(_configuration.PathToAssembly);
+      _rootDirectory = Path.GetDirectoryName(_configuration.PathToAssembly);
       _assemblyToObserve = new AssemblyNameHelper().GetAssemblyNameOf(_configuration.PathToAssembly);
 
       _watcher = new FileSystemWatcher
                  {
-                   Path = _rootDictionary,
+                   Path = _rootDirectory,
                    IncludeSubdirectories = false,
                    Filter = Path.GetFileName(_configuration.PathToAssembly)
                  };
@@ -119,14 +120,19 @@ namespace Guapr.App
         // thread and resume later. 
         await Task.Run(() =>
                        {
-                         _lastDomain = AppDomainUtils.CreateShadowAppDomain("Document-Host")
-                                                     .ResolveAssembliesFrom(_rootDictionary);
+                         _lastDomain = AppDomain.CreateDomain("Document-Host",
+                                                              null,
+                                                              new AppDomainSetup()
+                                                              {
+                                                                ShadowCopyFiles = "true",
+                                                                ApplicationBase = _rootDirectory
+                                                              });
 
-                         _currentEntryPoint = _lastDomain.CreateInstanceOf<InAppDomainController>()
+                         _currentEntryPoint = _lastDomain.CreateInstanceOf<ClientEnvironmentLoader>()
                                                          .FindEntryPoint(_assemblyToObserve);
                        });
 
-        var directoryInfo = GetSesionDirectory();
+        var directoryInfo = GetSessionDirectory();
 
         var reference = _currentEntryPoint.Initialize(directoryInfo.FullName);
         var proxyElement = FrameworkElementAdapters.ContractToViewAdapter(reference);
@@ -154,7 +160,7 @@ namespace Guapr.App
       }
     }
 
-    private DirectoryInfo GetSesionDirectory()
+    private DirectoryInfo GetSessionDirectory()
     {
       var md5 = Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(_assemblyToObserve)));
       var assemblyPath = new Uri(typeof(AppDomainedControlHost).Assembly.EscapedCodeBase).LocalPath;

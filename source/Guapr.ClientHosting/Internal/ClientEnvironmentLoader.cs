@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Guapr.ClientHosting;
+using System.Threading.Tasks;
 
-namespace Guapr.App
+namespace Guapr.ClientHosting.Internal
 {
   /// <summary>
-  ///  Api that is created in the "Reload" domain and allows the "Host" app-domain to interact with
-  ///  objects in the AppDomain.
+  ///  Prepares the client-environment for the hosting domain.
+  ///  
+  ///  Created in the Client Domain by the Server Domain.
   /// </summary>
-  public class InAppDomainController : MarshalByRefObject
+  [OwnedByDomain(DomainAttribute.Client, CreatedBy = DomainAttribute.Server)]
+  public class ClientEnvironmentLoader : MarshalByRefObject
   {
     /// <summary>
     ///  Creates a Framework element with the given assembly and the given type name.
