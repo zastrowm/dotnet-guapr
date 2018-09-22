@@ -4,9 +4,7 @@ using System.AddIn.Pipeline;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using Newtonsoft.Json;
 
 namespace Guapr.ClientHosting.Internal
 {
@@ -14,7 +12,7 @@ namespace Guapr.ClientHosting.Internal
   ///  A proxy for <see cref="IHostedEntryPoint"/> that exists in the AppDomain where the entry-
   ///  point was created.  Provides additional functionality for interacting with the given instance.
   /// </summary>
-  [OwnedByDomain(DomainAttribute.Client, CreatedBy = DomainAttribute.Client)]
+  [DomainUsage(DomainId.Client, CreatedBy = DomainId.Client)]
   public class InDomainWatcherWrapper : MarshalByRefObject
   {
     private readonly IHostedEntryPoint _entryPoint;
@@ -47,87 +45,6 @@ namespace Guapr.ClientHosting.Internal
     public void Shutdown()
     {
       _entryPoint.Shutdown(_element, _startupApi);
-    }
-
-    /// <summary> Implementation of the startup/shutdown infos </summary>
-    private class StartupAndShutdownApi : IEntryPointStartupApi,
-                                          IEntryPointShutdownApi
-    {
-      public StartupAndShutdownApi(DirectoryInfo stateDirectory)
-      {
-        StateDirectory = stateDirectory;
-      }
-
-      /// <inheritdoc cref="IEntryPointShutdownApi.StateDirectory" />
-      /// <inheritdoc cref="IEntryPointShutdownApi.StateDirectory" />
-      public DirectoryInfo StateDirectory { get; }
-
-      /// <inheritdoc />
-      public event EventHandler FocusGranted;
-
-      /// <summary> Invokes the <see cref="FocusGranted"/> event. </summary>
-      public void FireFocusGranted(object sender, EventArgs args)
-        => FocusGranted?.Invoke(sender, args);
-
-      /// <inheritdoc />
-      bool IEntryPointStartupApi.TryLoadState<T>(string name, out T state)
-      {
-        name = GetSafeName(name);
-
-        try
-        {
-          var file = GetSessionFile(name);
-          if (!file.Exists)
-          {
-            state = default(T);
-            return false;
-          }
-
-          using (var reader = new StreamReader(file.Open(FileMode.Open, FileAccess.Read)))
-          using (var jsonReader = new JsonTextReader(reader))
-          {
-            var serializer = new JsonSerializer();
-            state = serializer.Deserialize<T>(jsonReader);
-            return true;
-          }
-        }
-        catch
-        {
-          state = default(T);
-          return false;
-        }
-      }
-
-      /// <inheritdoc />
-      void IEntryPointShutdownApi.SaveState<T>(string name, T state)
-      {
-        name = GetSafeName(name);
-
-        try
-        {
-          var file = GetSessionFile(name);
-          var serializer = new JsonSerializer();
-
-          using (var writer = new StreamWriter(file.Open(FileMode.Create)))
-          {
-            serializer.Serialize(writer, state);
-          }
-        }
-        catch
-        {
-        }
-      }
-
-      private string GetSafeName(string name)
-      {
-        if (name == null)
-          return "";
-
-        return "." + Convert.ToBase64String(Encoding.UTF8.GetBytes(name));
-      }
-
-      private FileInfo GetSessionFile(string name)
-        => new FileInfo(Path.Combine(StateDirectory.FullName, $".__session.state{name}__"));
     }
   }
 }

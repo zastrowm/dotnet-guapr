@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -11,58 +12,65 @@ using Guapr.ClientHosting.Test;
 namespace Guapr.ClientHosting.Test
 {
   // Entry point that simply exposes two text boxes with a First and Last Name. 
-  internal class ExampleHostEntryPoint : HostedEntryPoint<OurCustomControl, State>
+  [DisplayName("Example Host")]
+  [Description("Demonstrates a way to implement IHostedEntryPoint")]
+  internal class ExampleHostEntryPoint : SimpleStateHostedEntryPoint<OurCustomControl, State>
   {
-    // invoked when the app is starting.  We need to return the gui control here 
-    protected override OurCustomControl Startup(IEntryPointStartupApi startupApi, State previousState)
+    /// <inheritdoc />
+    public override State CreateDefaultState()
     {
-      // if we never started before, previousState could be null
-      previousState = previousState ?? new State();
-      previousState.ReloadIndex++;
-
-      // create the gui, restoring the state via the State class (which is the only thing
-      // that's saved between reloads) 
-      var gui = new OurCustomControl(previousState.ReloadIndex)
-                {
-                  FirstName =
-                  {
-                    Text = previousState.FirstName,
-                  },
-                  LastName =
-                  {
-                    Text = previousState.LastName
-                  }
-                };
-
-      // when the host has granted us focus, let's refocus the last text box we were at
-      startupApi.FocusGranted +=
-        (sender, args) =>
-        {
-          var toFocus = previousState.IsLastNameFocused
-            ? gui.LastName
-            : gui.FirstName;
-
-          toFocus.Focus();
-          toFocus.SelectionStart = previousState.SelectionIndex;
-        };
-
-      // of course, return the gui that we want displayed
-      return gui;
+      // if the app was never constructed before, this method will be invoked, so go ahead and
+      // create the default state
+      return new State();
     }
 
-    // Invoked when the current session of the GUI is shutting down.  Should be used to 
-    // save whatever state we want to maintain so that the reload is as seamless as possible
-    protected override State Shutdown(OurCustomControl gui, IEntryPointShutdownApi shutdownApi)
+    /// <inheritdoc />
+    public override OurCustomControl CreateControl()
     {
-      var focusedTextBox = gui.LastName.IsFocused ? gui.LastName : gui.FirstName;
+      // create the gui, restoring the state via the State class (which is the only thing that's
+      // saved between reloads) 
+
+      CurrentState.ReloadIndex++;
+
+      return new OurCustomControl(CurrentState.ReloadIndex)
+             {
+               FirstName =
+               {
+                 Text = CurrentState.FirstName,
+               },
+               LastName =
+               {
+                 Text = CurrentState.LastName
+               }
+             };
+    }
+
+    /// <inheritdoc />
+    public override void OnFocusReady()
+    {
+      // when the host has granted us focus, let's refocus the last text box we were at
+      var toFocus = CurrentState.IsLastNameFocused
+        ? Control.LastName
+        : Control.FirstName;
+
+      toFocus.Focus();
+      toFocus.SelectionStart = CurrentState.SelectionIndex;
+    }
+
+    /// <inheritdoc />
+    public override State GetStateToPersist()
+    {
+      // Invoked when the current session of the GUI is shutting down.  Should be used to 
+      // save whatever state we want to maintain so that the reload is as seamless as possible
+      var focusedTextBox = Control.LastName.IsFocused ? Control.LastName : Control.FirstName;
 
       return new State()
              {
-               FirstName = gui.FirstName.Text,
-               LastName = gui.LastName.Text,
-               IsLastNameFocused = focusedTextBox == gui.LastName,
+               FirstName = Control.FirstName.Text,
+               LastName = Control.LastName.Text,
+               IsLastNameFocused = focusedTextBox == Control.LastName,
                SelectionIndex = focusedTextBox.SelectionStart,
-               ReloadIndex = gui.ReloadIndex,
+               ReloadIndex = Control.ReloadIndex,
              };
     }
   }

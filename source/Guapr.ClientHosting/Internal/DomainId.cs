@@ -4,8 +4,8 @@ using System.Linq;
 
 namespace Guapr.ClientHosting.Internal
 {
-  /// <summary> <see cref="OwnedByDomainAttribute"/> </summary>
-  internal enum DomainAttribute
+  /// <summary> <see cref="DomainUsageAttribute"/> </summary>
+  internal enum DomainId
   {
     Client,
     Server

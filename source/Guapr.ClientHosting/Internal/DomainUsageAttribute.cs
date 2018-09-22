@@ -5,13 +5,15 @@ using System.Linq;
 namespace Guapr.ClientHosting.Internal
 {
   /// <summary> Helper attribute that merely indicates who creates/uses a given class. </summary>
-  internal class OwnedByDomainAttribute : System.Attribute
+  internal class DomainUsageAttribute : Attribute
   {
-    public OwnedByDomainAttribute(DomainAttribute originDomain)
+    public DomainUsageAttribute(DomainId originDomain)
     {
       
     }
 
-    public DomainAttribute CreatedBy { get; set; }
+    public DomainId CreatedBy { get; set; }
+
+    public DomainId LoadedBy { get; set; }
   }
 }

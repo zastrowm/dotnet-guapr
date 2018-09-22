@@ -5,15 +5,11 @@ using System.Linq;
 
 namespace Guapr.ClientHosting
 {
-  /// <summary> Arguments for entry point. </summary>
-  public interface IEntryPointStartupApi
+  /// <summary>
+  ///  API for functionality that can be invoked when the entry-point is being started up.
+  /// </summary>
+  public interface IEntryPointStartupApi : IStateDirectoryOwner
   {
-    /// <summary> Attempts to load state of the given type. </summary>
-    bool TryLoadState<T>(string name, out T state);
-
-    /// <summary> A directory where additional (larger) state can be stored. </summary>
-    DirectoryInfo StateDirectory{ get; }
-
     /// <summary>
     ///  Invoked when focus has been granted to the control. This event is only fired once, and can be
     ///  used for reassigning focus to the last control that was focused when the app was last

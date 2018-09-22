@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Guapr.ClientHosting.ExtraUtils;
 using Guapr.ClientHosting.Internal;
+using Guapr.ClientHosting.Shared;
 
 namespace Guapr.App
 {
@@ -21,13 +23,36 @@ namespace Guapr.App
     Waiting,
   }
 
+  internal class InitializationInfo : MarshalByRefObject, IClientInitializationData
+  {
+    public InitializationInfo(
+      string clientAssemblyDirectory, 
+      string targetAssembly,
+      string extraAssembliesDirectory,
+      DynamicallyLoadedTypeName easySerializerTypeInfo
+    )
+    {
+      ClientAssemblyDirectory = clientAssemblyDirectory;
+      TargetAssembly = targetAssembly;
+      ExtraAssembliesDirectory = extraAssembliesDirectory;
+      EasySerializerTypeInfo = easySerializerTypeInfo;
+    }
+
+    public string TargetAssembly { get; }
+    public string ClientAssemblyDirectory { get; }
+    public string ExtraAssembliesDirectory { get; }
+    public DynamicallyLoadedTypeName EasySerializerTypeInfo { get; }
+  }
+
   /// <summary>
   ///  Contains the implementation of a loading a specific control from another app domain.
   /// </summary>
   internal class AppDomainedControlHost : IDisposable
   {
+    private DirectoryInfo _selfDirectory;
+
     private readonly AssemblyConfiguration _configuration;
-    private readonly string _rootDirectory;
+    private readonly string _clientAssemblyDirectory;
     private readonly string _assemblyToObserve;
 
     private AppDomain _lastDomain;
@@ -40,12 +65,15 @@ namespace Guapr.App
     {
       _configuration = configuration;
 
-      _rootDirectory = Path.GetDirectoryName(_configuration.PathToAssembly);
+      _clientAssemblyDirectory = Path.GetDirectoryName(_configuration.PathToAssembly);
       _assemblyToObserve = new AssemblyNameHelper().GetAssemblyNameOf(_configuration.PathToAssembly);
+
+      var uri = new Uri(typeof(AppDomainedControlHost).Assembly.EscapedCodeBase);
+      _selfDirectory = new DirectoryInfo(uri.LocalPath).Parent;
 
       _watcher = new FileSystemWatcher
                  {
-                   Path = _rootDirectory,
+                   Path = _clientAssemblyDirectory,
                    IncludeSubdirectories = false,
                    Filter = Path.GetFileName(_configuration.PathToAssembly)
                  };
@@ -120,16 +148,19 @@ namespace Guapr.App
         // thread and resume later. 
         await Task.Run(() =>
                        {
-                         _lastDomain = AppDomain.CreateDomain("Document-Host",
-                                                              null,
-                                                              new AppDomainSetup()
-                                                              {
-                                                                ShadowCopyFiles = "true",
-                                                                ApplicationBase = _rootDirectory
-                                                              });
+                         _lastDomain = AppDomainUtils.CreateAppDomainForDirectory("Document-Host",
+                                                                                  _clientAssemblyDirectory);
 
-                         _currentEntryPoint = _lastDomain.CreateInstanceOf<ClientEnvironmentLoader>()
-                                                         .FindEntryPoint(_assemblyToObserve);
+                         var initData = new InitializationInfo(
+                           clientAssemblyDirectory: _clientAssemblyDirectory,
+                           targetAssembly: _assemblyToObserve,
+                           extraAssembliesDirectory: _selfDirectory.FullName,
+                           easySerializerTypeInfo: new DynamicallyLoadedTypeName(typeof(JsonEasySerializer))
+                           );
+
+                         var bootstrapper = _lastDomain.CreateInstanceOf<ClientHostingBootstrapper>();
+                         _currentEntryPoint = bootstrapper.FindEntryPoint(initData);
+
                        });
 
         var directoryInfo = GetSessionDirectory();

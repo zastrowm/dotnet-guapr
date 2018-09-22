@@ -36,9 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -56,14 +53,26 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Public\EntryPointUtilities.cs" />
+    <Compile Include="Public\IEasySerializer.cs" />
+    <Compile Include="Internal\AssemblyNameHelper.cs" />
+    <Compile Include="Internal\ExtraUtils.cs" />
     <Compile Include="Internal\ClientEnvironmentLoader.cs" />
-    <Compile Include="HostedEntryPoint.cs" />
-    <Compile Include="HostedTargetTypeAttribute.cs" />
-    <Compile Include="IEntryPointShutdownApi.cs" />
-    <Compile Include="IEntryPointStartupApi.cs" />
+    <Compile Include="Public\SimpleStateHostedEntryPoint.cs" />
+    <Compile Include="Public\HostedTargetTypeAttribute.cs" />
+    <Compile Include="Public\IEntryPointShutdownApi.cs" />
+    <Compile Include="Public\IEntryPointStartupApi.cs" />
+    <Compile Include="Internal\DomainId.cs" />
+    <Compile Include="Internal\IClientInitializationData.cs" />
     <Compile Include="Internal\InDomainWatcherWrapper.cs" />
+    <Compile Include="Internal\DomainUsageAttribute.cs" />
+    <Compile Include="Internal\StartupAndShutdownApi.cs" />
+    <Compile Include="Public\IStateDirectoryOwner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IHostedEntryPoint.cs" />
+    <Compile Include="Public\IHostedEntryPoint.cs" />
+    <Compile Include="Internal\AlwaysDebug.cs" />
+    <Compile Include="Shared\AppDomainUtils.cs" />
+    <Compile Include="Shared\DynamicallyLoadedTypeName.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Guapr.ClientHosting.nuspec" />

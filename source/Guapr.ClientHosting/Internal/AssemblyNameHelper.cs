@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Guapr.ClientHosting.Shared;
 
-namespace Guapr.App
+namespace Guapr.ClientHosting.Internal
 {
   /// <summary>
   ///  Retrieves the name of the assembly from the provided exe or dll, by loading it into an app
@@ -23,9 +24,7 @@ namespace Guapr.App
         return assembly.GetName().Name;
       }
 
-      var domain = AppDomainUtils.CreateShadowAppDomain(FriendlyTempDomainName)
-                                 .ResolveAssembliesFrom(Path.GetDirectoryName(pathToExeOrDll));
-
+      var domain = AppDomainUtils.CreateAppDomainForDirectory(FriendlyTempDomainName, Path.GetDirectoryName(pathToExeOrDll));
       var helper = domain.CreateInstanceOf<AssemblyNameHelper>();
 
       var name = helper.GetAssemblyNameOf(pathToExeOrDll);

@@ -4,20 +4,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Guapr.App
+namespace Guapr.ClientHosting.Shared
 {
   /// <summary> Utility helper methods for interacting with AppDomains. </summary>
-  public static class AppDomainUtils
+  internal static class AppDomainUtils
   {
     /// <summary>
     ///  Creates an instance of the given type in the given app-domain.
     /// </summary>
     public static T CreateInstanceOf<T>(this AppDomain domain)
       where T : MarshalByRefObject
-    {
-      var instance = domain.CreateInstance(typeof(T).Assembly.FullName, typeof(T).FullName);
-      return (T)instance.Unwrap();
-    }
+      => (T)domain.CreateInstanceAndUnwrap(typeof(T).Assembly.FullName, typeof(T).FullName);
+
+    /// <summary>
+    ///  Creates an instance of the given type in the given app-domain.
+    /// </summary>
+    public static T CreateInstanceOf<T>(this AppDomain domain, DynamicallyLoadedTypeName typename)
+      where T : MarshalByRefObject 
+      => (T)domain.CreateInstanceAndUnwrap(typename.AssemblyName, typename.TypeName);
 
     /// <summary>
     ///  Creates an instance of the given type in the given app-domain.
@@ -38,17 +42,17 @@ namespace Guapr.App
     }
 
     /// <summary>
-    ///  Creates an appdomain that loads its assembly via shadow-copy.
+    ///  Creates an appdomain that loads its assembly via shadow-copy and from the given directory.
     /// </summary>
-    public static AppDomain CreateShadowAppDomain(string appDomainName)
+    public static AppDomain CreateAppDomainForDirectory(string friendlyName, string directory)
     {
-      var domain = AppDomain.CreateDomain(appDomainName,
-                                          null,
-                                          new AppDomainSetup()
-                                          {
-                                            ShadowCopyFiles = "true",
-                                          });
-      return domain;
+      return AppDomain.CreateDomain(friendlyName,
+                                    null,
+                                    new AppDomainSetup()
+                                    {
+                                      ShadowCopyFiles = "true",
+                                      ApplicationBase = directory
+                                    });
     }
 
     /// <summary> Have the AppDomain load assemblies from the given directory. </summary>

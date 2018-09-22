@@ -68,9 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppDomainedControlHost.cs" />
-    <Compile Include="AppDomainUtils.cs" />
     <Compile Include="AssemblyConfiguration.cs" />
-    <Compile Include="AssemblyNameHelper.cs" />
     <Compile Include="ControlWatcher.cs" />
     <Compile Include="MessageControl.xaml.cs">
       <DependentUpon>MessageControl.xaml</DependentUpon>
@@ -125,6 +123,10 @@
     <Resource Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Guapr.ClientHosting.ExtraUtils\Guapr.ClientHosting.ExtraUtils.csproj">
+      <Project>{B4C8BCCC-3D36-4480-B6CE-E216F221D5AE}</Project>
+      <Name>Guapr.ClientHosting.ExtraUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Guapr.ClientHosting\Guapr.ClientHosting.csproj">
       <Project>{fba5d776-c1e5-4b06-8e81-fcefe9041875}</Project>
       <Name>Guapr.ClientHosting</Name>
